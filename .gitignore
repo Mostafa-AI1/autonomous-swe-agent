@@ -1,0 +1,38 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# Environments & Packaging
+.venv/
+env/
+venv/
+ENV/
+build/
+dist/
+*.egg-info/
+
+# Agent Traces & Telemetry Runs
+trajectories/
+runs/
+*.log
+
+# Docker & Temporary Sandbox Mounts
+.sandbox_cache/
+sandbox_workspaces/
+
+# Benchmark evaluation artifacts
+eval_results/
+eval_checkpoints/
+
+# IDE & OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Secrets
+.env
+.env.*
+!.env.example
