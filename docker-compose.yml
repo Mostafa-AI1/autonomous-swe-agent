@@ -1,0 +1,27 @@
+services:
+  # The isolated execution sandbox used by the SWE agent
+  sandbox:
+    build:
+      context: .
+      dockerfile: Dockerfile.sandbox
+    image: swe-sandbox:latest
+    container_name: swe-sandbox-dev
+    stdin_open: true
+    tty: true
+    volumes:
+      - ./sandbox_workspaces:/workspace:rw
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 2G
+
+  # Optional self-hosted Langfuse observability (uncomment when enabling advanced telemetry)
+  # langfuse:
+  #   image: langfuse/langfuse:2
+  #   ports:
+  #     - "3000:3000"
+  #   environment:
+  #     - DATABASE_URL=postgresql://postgres:postgres@db:5432/postgres
+  #     - NEXTAUTH_SECRET=mysecret
+  #     - SALT=mysalt
