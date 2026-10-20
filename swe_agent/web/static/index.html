@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Autonomous SWE Agent - Production Engineering Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body class="dark-theme">
+  <!-- Top Navigation Bar -->
+  <header class="top-nav">
+    <div class="brand">
+      <div class="brand-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+        </svg>
+      </div>
+      <div>
+        <h1 class="brand-title">Autonomous SWE Agent</h1>
+        <span class="brand-tag">Goal-Directed FSM • Docker Sandbox • SWE-bench Evaluator</span>
+      </div>
+    </div>
+
+    <div class="nav-status-group">
+      <div class="status-pill status-idle" id="globalStateBadge">
+        <span class="status-dot"></span>
+        <span id="globalStateText">IDLE</span>
+      </div>
+      <div class="model-badge" id="activeModelBadge">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>
+        </svg>
+        <span id="activeModelText">Gemini 3.8 Flash</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Application Container -->
+  <main class="dashboard-layout">
+    <!-- Left Column: Task Controls & Cognitive State -->
+    <section class="panel left-panel">
+      <!-- Quick Demo Presets -->
+      <div class="card preset-card">
+        <div class="card-header">
+          <h3>Interactive Presets</h3>
+          <span class="badge">Click to load</span>
+        </div>
+        <div class="preset-buttons">
+          <button class="preset-btn active" data-task="swe-mini-01-url-routing">
+            <span class="preset-tag">Flask</span>
+            <span class="preset-title">URL Trailing Slash Bug (#3421)</span>
+          </button>
+          <button class="preset-btn" data-task="swe-mini-02-auth-headers">
+            <span class="preset-tag">Requests</span>
+            <span class="preset-title">Session Header Casing (#4211)</span>
+          </button>
+          <button class="preset-btn" data-task="swe-mini-03-cli-exception">
+            <span class="preset-tag">Click</span>
+            <span class="preset-title">CLI Parser KeyError (#1875)</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Task Form -->
+      <div class="card form-card">
+        <div class="card-header">
+          <h3>Assigned Issue</h3>
+        </div>
+        <div class="form-group">
+          <label for="issueInput">Problem Description</label>
+          <textarea id="issueInput" rows="4" placeholder="Describe the software bug or issue to resolve..."></textarea>
+        </div>
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label for="repoInput">Repository Path</label>
+            <input type="text" id="repoInput" value="./workspace/flask-mock">
+          </div>
+          <div class="form-group">
+            <label for="modeSelect">Execution Mode</label>
+            <select id="modeSelect">
+              <option value="production">Production (HITL)</option>
+              <option value="benchmark" selected>Benchmark (Headless)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="action-buttons">
+          <button id="btnDemoRun" class="btn btn-primary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polygon points="5 3 19 12 5 21 5 3"/>
+            </svg>
+            Run Instant Demo (Zero Cost)
+          </button>
+          <button id="btnLiveRun" class="btn btn-secondary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+            </svg>
+            Run Live Agent (API)
+          </button>
+        </div>
+      </div>
+
+      <!-- FSM State Machine Graph -->
+      <div class="card fsm-card">
+        <div class="card-header">
+          <h3>Goal-Directed FSM</h3>
+          <span class="fsm-step-counter" id="stepCounter">Step 0 / 30</span>
+        </div>
+        <div class="fsm-pipeline">
+          <div class="fsm-node" id="nodeINITIALIZE">
+            <div class="fsm-circle">1</div>
+            <div class="fsm-label">INIT</div>
+          </div>
+          <div class="fsm-line"></div>
+          <div class="fsm-node" id="nodeEXPLORE">
+            <div class="fsm-circle">2</div>
+            <div class="fsm-label">EXPLORE</div>
+          </div>
+          <div class="fsm-line"></div>
+          <div class="fsm-node" id="nodeREPRODUCE">
+            <div class="fsm-circle">3</div>
+            <div class="fsm-label">REPRO</div>
+          </div>
+          <div class="fsm-line"></div>
+          <div class="fsm-node" id="nodePATCH">
+            <div class="fsm-circle">4</div>
+            <div class="fsm-label">PATCH</div>
+          </div>
+          <div class="fsm-line"></div>
+          <div class="fsm-node" id="nodeVERIFY">
+            <div class="fsm-circle">5</div>
+            <div class="fsm-label">VERIFY</div>
+          </div>
+          <div class="fsm-line"></div>
+          <div class="fsm-node" id="nodeCOMPLETE">
+            <div class="fsm-circle">6</div>
+            <div class="fsm-label">DONE</div>
+          </div>
+        </div>
+
+        <div class="working-memory">
+          <div class="memory-item">
+            <span class="memory-label">Active Hypothesis:</span>
+            <span class="memory-value" id="memoryHypothesis">Awaiting task initiation...</span>
+          </div>
+          <div class="memory-item">
+            <span class="memory-label">Modified Files:</span>
+            <span class="memory-value" id="memoryFiles">None</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Center Column: Thought Stream & Live Terminal -->
+    <section class="panel center-panel">
+      <!-- Agent Thought Stream -->
+      <div class="card thought-card">
+        <div class="card-header">
+          <h3>Cognitive Reasoning Stream</h3>
+          <span class="pulse-indicator" id="thoughtPulse"></span>
+        </div>
+        <div class="thought-stream" id="thoughtStream">
+          <div class="thought-bubble system-note">
+            <div class="thought-icon">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>
+              </svg>
+            </div>
+            <div class="thought-content">
+              <strong>Agent Standing By</strong>
+              <p>Select a preset task on the left and click <strong>"Run Instant Demo"</strong> to watch the agent autonomously inspect, write a reproduction script, apply a surgical patch, and pass verification.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Terminal Output -->
+      <div class="card terminal-card">
+        <div class="terminal-header">
+          <div class="terminal-dots">
+            <span class="dot dot-red"></span>
+            <span class="dot dot-yellow"></span>
+            <span class="dot dot-green"></span>
+          </div>
+          <div class="terminal-title">isolated-sandbox @ docker://swe-sandbox:latest</div>
+          <button class="terminal-clear-btn" id="btnClearTerminal">Clear</button>
+        </div>
+        <div class="terminal-body" id="terminalOutput">
+          <pre class="term-line prompt">[agent@sandbox /workspace]$ echo 'SWE Agent execution sandbox initialized.'</pre>
+          <pre class="term-line output">SWE Agent execution sandbox initialized.</pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- Right Column: Git Diff Viewer & Metrics Scoreboard -->
+    <section class="panel right-panel">
+      <!-- 8-Dimensional Metrics Scoreboard -->
+      <div class="card metrics-card">
+        <div class="card-header">
+          <h3>8-D Evaluation Engine</h3>
+          <span class="badge badge-success" id="evalVerdict">READY</span>
+        </div>
+        <div class="metrics-grid">
+          <div class="metric-box">
+            <span class="metric-val text-green" id="metricPass">100%</span>
+            <span class="metric-lbl">Pass@1 Rate</span>
+          </div>
+          <div class="metric-box">
+            <span class="metric-val" id="metricRegress">0%</span>
+            <span class="metric-lbl">Regressions</span>
+          </div>
+          <div class="metric-box">
+            <span class="metric-val" id="metricLatency">1.2s</span>
+            <span class="metric-lbl">Latency</span>
+          </div>
+          <div class="metric-box">
+            <span class="metric-val" id="metricTools">3</span>
+            <span class="metric-lbl">Tool Calls</span>
+          </div>
+          <div class="metric-box">
+            <span class="metric-val text-cyan" id="metricDelta">+2 / -1</span>
+            <span class="metric-lbl">Patch Delta</span>
+          </div>
+          <div class="metric-box">
+            <span class="metric-val" id="metricSpurious">0</span>
+            <span class="metric-lbl">Spurious Edits</span>
+          </div>
+          <div class="metric-box">
+            <span class="metric-val" id="metricTokens">620</span>
+            <span class="metric-lbl">Total Tokens</span>
+          </div>
+          <div class="metric-box">
+            <span class="metric-val text-green" id="metricCost">$0.00</span>
+            <span class="metric-lbl">Model Cost</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Unified Git Diff Viewer -->
+      <div class="card diff-card">
+        <div class="card-header">
+          <h3>Unified Patch Diff (Verified)</h3>
+          <span class="diff-meta" id="diffMeta">git diff --stat</span>
+        </div>
+        <div class="diff-viewer" id="diffViewer">
+          <div class="diff-empty-state">
+            <span>No active patch. Run a task to generate surgical code diff.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- JavaScript Bundle -->
+  <script src="/static/app.js"></script>
+</body>
+</html>
