@@ -25,6 +25,23 @@ def test_cli_help():
     assert "benchmark" in result.output
     assert "inspect" in result.output
     assert "version" in result.output
+    assert "demo" in result.output
+    assert "web" in result.output
+
+
+def test_cli_demo_help():
+    """Verify demo command options."""
+    result = runner.invoke(app, ["demo", "--help"])
+    assert result.exit_code == 0
+    assert "--port" in result.output
+
+
+def test_cli_web_help():
+    """Verify web command options."""
+    result = runner.invoke(app, ["web", "--help"])
+    assert result.exit_code == 0
+    assert "--port" in result.output
+    assert "--host" in result.output
 
 
 def test_cli_run_help():

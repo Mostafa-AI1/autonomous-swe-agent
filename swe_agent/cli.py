@@ -272,5 +272,33 @@ def inspect(
             ))
 
 
+@app.command()
+def demo(
+    port: int = typer.Option(8000, "--port", "-p", help="Port to run demo dashboard on"),
+    open_browser: bool = typer.Option(False, "--open", help="Automatically open web browser")
+):
+    """Launch the interactive Web UI and portfolio demonstration dashboard."""
+    _print_banner()
+    console.print(f"[bold green]Starting Interactive Portfolio Demo at: http://localhost:{port}[/bold green]")
+    console.print("[dim]Includes: Goal-Directed FSM Pipeline, Real-Time Terminal, Diff Viewer, and 1-Click Instant Demo.[/dim]\n")
+    if open_browser:
+        import webbrowser
+        webbrowser.open(f"http://localhost:{port}")
+    from swe_agent.web.server import start_server
+    start_server(port=port)
+
+
+@app.command()
+def web(
+    host: str = typer.Option("127.0.0.1", "--host", "-h", help="Bind host address"),
+    port: int = typer.Option(8000, "--port", "-p", help="Bind port number")
+):
+    """Start the production FastAPI web dashboard server."""
+    _print_banner()
+    console.print(f"[bold cyan]Launching SWE Agent Web Dashboard on http://{host}:{port}[/bold cyan]")
+    from swe_agent.web.server import start_server
+    start_server(host=host, port=port)
+
+
 if __name__ == "__main__":
     app()
