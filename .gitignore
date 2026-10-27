@@ -25,6 +25,7 @@ sandbox_workspaces/
 # Benchmark evaluation artifacts
 eval_results/
 eval_checkpoints/
+eval_workspaces/
 
 # IDE & OS
 .vscode/
