@@ -15,10 +15,10 @@ ApprovalCallback = Callable[[CommandRiskAssessment], bool]
 def default_terminal_approval_prompt(assessment: CommandRiskAssessment) -> bool:
     """Default interactive CLI prompt for human developer confirmation."""
     print("\n" + "=" * 65)
-    print("⚠️   [HITL GATEKEEPER] HIGH-RISK ACTION INTERCEPTED")
-    print(f"• Command:    {assessment.command}")
-    print(f"• Risk Level: {assessment.risk_level.value}")
-    print(f"• Reason:     {assessment.reason}")
+    print("[HITL GATEKEEPER] HIGH-RISK ACTION INTERCEPTED")
+    print(f"- Command:    {assessment.command}")
+    print(f"- Risk Level: {assessment.risk_level.value}")
+    print(f"- Reason:     {assessment.reason}")
     print("=" * 65)
 
     try:

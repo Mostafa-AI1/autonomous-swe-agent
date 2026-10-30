@@ -1,4 +1,4 @@
-# Autonomous Software Engineering (SWE) Agent 🚀
+# Autonomous Software Engineering (SWE) Agent
 
 > A production-grade, stateful autonomous software engineering agent built for deterministic repository inspection, reproduction, precision patching, and verification.
 
@@ -165,9 +165,27 @@ We evaluate agent performance against a **custom SWE-bench-inspired mini benchma
 
 ---
 
-## 7. Interactive CLI & Commands
+## 7. Interactive Web Dashboard & 1-Click Portfolio Demo
 
-The agent features a rich terminal user interface built with `Typer` and `Rich`:
+For portfolio presentations and recruiters, the project includes a dark-themed **Web Dashboard** with real-time FSM pipeline visualizers, streaming terminal logs, diff viewers, and zero-cost demo simulations:
+
+```bash
+# Launch the interactive web dashboard (accessible at http://localhost:8000)
+python -m swe_agent.cli demo
+```
+
+### Key Capabilities of the Web UI:
+- **Zero-Cost Instant Demo Mode**: Click **"Run Instant Demo"** to watch the agent autonomously inspect, write a reproduction script, apply a surgical patch, and pass verification without requiring an API key.
+- **FSM State Pipeline Visualizer**: Animated glowing transitions across `INIT` -> `EXPLORE` -> `REPRO` -> `PATCH` -> `VERIFY` -> `DONE`.
+- **Live Sandboxed Terminal**: Real-time terminal output displaying commands, stack traces, and smart output truncation.
+- **Unified Diff Viewer**: Side-by-side / unified color-coded git patch viewer.
+- **8-Dimensional Metrics Radar**: Live updates for Pass@1, regression rate, latency, patch delta, and cost.
+
+---
+
+## 8. Interactive CLI & Commands
+
+The agent also features a rich terminal user interface built with `Typer` and `Rich`:
 
 ### 1. Interactive Pairing Mode (Production + HITL)
 Pair with the agent on an active repository issue. Destructive commands prompt the developer for interactive confirmation (`[y/N]`):

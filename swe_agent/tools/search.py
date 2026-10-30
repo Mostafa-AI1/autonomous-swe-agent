@@ -263,7 +263,7 @@ class ListDirectoryTool(BaseTool):
                 continue
 
             if entry.is_dir():
-                lines.append(f"{indent}📁 {entry.name}/")
+                lines.append(f"{indent}[DIR] {entry.name}/")
                 self._build_tree(base_dir, entry, lines, current_depth + 1, max_depth)
             else:
-                lines.append(f"{indent}📄 {entry.name}")
+                lines.append(f"{indent}[FILE] {entry.name}")
