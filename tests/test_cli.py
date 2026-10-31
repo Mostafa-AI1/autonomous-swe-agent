@@ -1,65 +1,77 @@
 """Unit tests for the Typer and Rich CLI interface."""
 
 import json
+import re
 from pathlib import Path
 
 from typer.testing import CliRunner
 
 from swe_agent.cli import app
 
-runner = CliRunner()
+runner = CliRunner(env={"NO_COLOR": "1", "TERM": "dumb"})
+
+
+def _clean(output: str) -> str:
+    """Strip ANSI color and styling escape sequences from CLI output."""
+    return re.sub(r"\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])", "", output)
 
 
 def test_cli_version():
     """Verify version command outputs configuration table."""
     result = runner.invoke(app, ["version"])
     assert result.exit_code == 0
-    assert "AUTONOMOUS SWE AGENT" in result.output
-    assert "System Configuration" in result.output
-    assert "gemini" in result.output
+    out = _clean(result.output)
+    assert "AUTONOMOUS SWE AGENT" in out
+    assert "System Configuration" in out
+    assert "gemini" in out
 
 
 def test_cli_help():
     """Verify root help outputs available commands."""
     result = runner.invoke(app, ["--help"])
     assert result.exit_code == 0
-    assert "run" in result.output
-    assert "benchmark" in result.output
-    assert "inspect" in result.output
-    assert "version" in result.output
-    assert "demo" in result.output
-    assert "web" in result.output
+    out = _clean(result.output)
+    assert "run" in out
+    assert "benchmark" in out
+    assert "inspect" in out
+    assert "version" in out
+    assert "demo" in out
+    assert "web" in out
 
 
 def test_cli_demo_help():
     """Verify demo command options."""
     result = runner.invoke(app, ["demo", "--help"])
     assert result.exit_code == 0
-    assert "--port" in result.output
+    out = _clean(result.output)
+    assert "--port" in out
 
 
 def test_cli_web_help():
     """Verify web command options."""
     result = runner.invoke(app, ["web", "--help"])
     assert result.exit_code == 0
-    assert "--port" in result.output
-    assert "--host" in result.output
+    out = _clean(result.output)
+    assert "--port" in out
+    assert "--host" in out
 
 
 def test_cli_run_help():
     """Verify run command options."""
     result = runner.invoke(app, ["run", "--help"])
     assert result.exit_code == 0
-    assert "--issue" in result.output
-    assert "--repo" in result.output
-    assert "--mode" in result.output
+    out = _clean(result.output)
+    assert "--issue" in out
+    assert "--repo" in out
+    assert "--mode" in out
 
 
 def test_cli_benchmark_help():
     """Verify benchmark command options."""
     result = runner.invoke(app, ["benchmark", "--help"])
     assert result.exit_code == 0
-    assert "--task" in result.output
+    out = _clean(result.output)
+    assert "--task" in out
 
 
 def test_cli_inspect_trajectory(tmp_path: Path):

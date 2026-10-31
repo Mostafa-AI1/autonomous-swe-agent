@@ -1,11 +1,11 @@
 """Goal-Directed Finite State Machine (FSM) and working memory models."""
 
-from enum import Enum
+from enum import StrEnum
 
 from pydantic import BaseModel, Field
 
 
-class AgentPhase(str, Enum):
+class AgentPhase(StrEnum):
     """Explicit lifecycle phases of the SWE agent."""
     INITIALIZE = "INITIALIZE"    # Environment setup and issue ingestion
     EXPLORE = "EXPLORE"          # Locating relevant files, symbols, and references

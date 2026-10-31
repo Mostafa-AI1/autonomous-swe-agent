@@ -1,13 +1,13 @@
 """Configuration management and execution modes for Autonomous SWE Agent."""
 
-from enum import Enum
+from enum import StrEnum
 from pathlib import Path
 
 from pydantic import AliasChoices, Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
-class ExecutionMode(str, Enum):
+class ExecutionMode(StrEnum):
     """Operational mode of the agent."""
     PRODUCTION = "production"  # Interactive CLI with Human-In-The-Loop (HITL) for risky actions
     BENCHMARK = "benchmark"    # Fully autonomous, zero-HITL, strict hard safety blocks

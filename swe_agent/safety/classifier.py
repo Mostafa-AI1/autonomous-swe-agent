@@ -1,12 +1,12 @@
 """Command risk classification engine for detecting destructive and suspicious actions."""
 
 import re
-from enum import Enum
+from enum import StrEnum
 
 from pydantic import BaseModel, Field
 
 
-class RiskLevel(str, Enum):
+class RiskLevel(StrEnum):
     """Classification of command execution risk."""
     SAFE = "SAFE"                # Standard development actions (pytest, git status, python test)
     SUSPICIOUS = "SUSPICIOUS"    # Network calls, dependency installations, env inspections
