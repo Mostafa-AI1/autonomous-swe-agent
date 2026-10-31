@@ -1,7 +1,6 @@
 """Path traversal and filesystem boundary validation guardrails."""
 
 from pathlib import Path
-from typing import Union
 
 
 class SecurityViolationError(PermissionError):
@@ -21,8 +20,8 @@ SENSITIVE_FILES_BLOCKLIST = {
 
 
 def validate_safe_path(
-    path: Union[str, Path],
-    workspace_dir: Union[str, Path],
+    path: str | Path,
+    workspace_dir: str | Path,
     allow_creation: bool = True
 ) -> Path:
     """Validate that target path remains strictly within the workspace directory.

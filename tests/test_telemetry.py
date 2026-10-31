@@ -2,6 +2,7 @@
 
 import json
 from pathlib import Path
+
 from swe_agent.telemetry.tracer import TrajectoryLogger, TrajectoryStep
 
 

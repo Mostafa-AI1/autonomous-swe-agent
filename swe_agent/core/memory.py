@@ -1,6 +1,7 @@
 """Context management, pinned system grounding, and sliding-window compaction."""
 
 from typing import Any
+
 from swe_agent.core.state import AgentState
 
 

@@ -1,10 +1,11 @@
 """Unit tests for sandbox isolation, security boundaries, and smart output truncation."""
 
-import os
-import pytest
 from pathlib import Path
-from swe_agent.sandbox.protocol import smart_truncate_output
+
+import pytest
+
 from swe_agent.sandbox.local_sandbox import LocalSandbox
+from swe_agent.sandbox.protocol import smart_truncate_output
 
 
 def test_smart_truncate_output_below_threshold():

@@ -1,6 +1,7 @@
 """Unit and API integration tests for the FastAPI Web Dashboard."""
 
 from fastapi.testclient import TestClient
+
 from swe_agent.web.server import app
 
 client = TestClient(app)

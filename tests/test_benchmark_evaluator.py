@@ -2,6 +2,7 @@
 
 from pathlib import Path
 from unittest.mock import MagicMock
+
 from benchmark.evaluator import BenchmarkEvaluator
 from benchmark.manifest import FROZEN_BENCHMARK_TASKS
 from swe_agent.models.provider import ModelProvider, ModelResponse, ToolCall

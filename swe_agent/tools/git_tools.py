@@ -1,6 +1,6 @@
 """Git tools enabling diff inspection, status checks, and self-recovery rollback."""
 
-from typing import Optional, Type
+
 from pydantic import BaseModel, Field
 
 from swe_agent.sandbox.protocol import AbstractSandbox
@@ -9,7 +9,7 @@ from swe_agent.tools.base import BaseTool, ToolResult
 
 class GitDiffInput(BaseModel):
     """Input arguments for git_diff."""
-    path: Optional[str] = Field(
+    path: str | None = Field(
         default=None,
         description="Optional specific file or directory to inspect diff for. Defaults to entire repository."
     )
@@ -23,7 +23,7 @@ class GitDiffTool(BaseTool):
         "View the unified git diff of all changes made so far. "
         "Always call this before concluding a task to verify patch cleanliness."
     )
-    args_schema: Type[BaseModel] = GitDiffInput
+    args_schema: type[BaseModel] = GitDiffInput
 
     def execute(self, sandbox: AbstractSandbox, **kwargs) -> ToolResult:
         args = GitDiffInput(**kwargs)
@@ -63,7 +63,7 @@ class GitStatusTool(BaseTool):
     description = (
         "Check git status to see which files are modified, untracked, or staged."
     )
-    args_schema: Type[BaseModel] = GitStatusInput
+    args_schema: type[BaseModel] = GitStatusInput
 
     def execute(self, sandbox: AbstractSandbox, **kwargs) -> ToolResult:
         res = sandbox.execute("git status --short")
@@ -104,7 +104,7 @@ class GitRestoreTool(BaseTool):
         "Revert uncommitted modifications to a file or the entire repository. "
         "Use this self-recovery tool when an edit fails tests and you want to start fresh."
     )
-    args_schema: Type[BaseModel] = GitRestoreInput
+    args_schema: type[BaseModel] = GitRestoreInput
 
     def execute(self, sandbox: AbstractSandbox, **kwargs) -> ToolResult:
         args = GitRestoreInput(**kwargs)

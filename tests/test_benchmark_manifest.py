@@ -20,6 +20,6 @@ def test_frozen_manifest_integrity():
 def test_gold_patch_quarantine():
     """Verify that gold patches are not exposed inside the task initial files."""
     for task in FROZEN_BENCHMARK_TASKS:
-        for file_path in task.initial_files.keys():
+        for file_path in task.initial_files:
             assert "verification" not in file_path.lower()
             assert "gold" not in file_path.lower()

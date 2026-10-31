@@ -6,9 +6,10 @@ tool execution, terminal output, and patch mutation for debugging and evals.
 
 import json
 import logging
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
+
 from pydantic import BaseModel, Field
 
 from swe_agent.config import settings
@@ -20,26 +21,26 @@ class TrajectoryStep(BaseModel):
     """An atomic step in the agent's execution trajectory."""
     step_number: int
     phase: str = Field(description="FSM state: e.g. EXPLORE, REPRODUCE, PATCH, VERIFY")
-    thought: Optional[str] = None
+    thought: str | None = None
     tool_calls: list[dict[str, Any]] = Field(default_factory=list)
     tool_outputs: list[dict[str, Any]] = Field(default_factory=list)
     duration_seconds: float = 0.0
     prompt_tokens: int = 0
     completion_tokens: int = 0
     timestamp: str = Field(
-        default_factory=lambda: datetime.now(timezone.utc).isoformat()
+        default_factory=lambda: datetime.now(UTC).isoformat()
     )
 
 
 class TrajectoryLogger:
     """Records agent trajectories to append-only JSONL files."""
 
-    def __init__(self, trajectory_dir: Optional[Path] = None):
+    def __init__(self, trajectory_dir: Path | None = None):
         self.trajectory_dir = trajectory_dir or settings.trajectory_dir
         self.trajectory_dir.mkdir(parents=True, exist_ok=True)
-        self.active_file: Optional[Path] = None
+        self.active_file: Path | None = None
         self.task_id: str = ""
-        self.start_time: Optional[datetime] = None
+        self.start_time: datetime | None = None
 
     def start_trajectory(
         self,
@@ -50,7 +51,7 @@ class TrajectoryLogger:
     ) -> Path:
         """Initialize a new trajectory session."""
         self.task_id = task_id
-        self.start_time = datetime.now(timezone.utc)
+        self.start_time = datetime.now(UTC)
         timestamp_slug = self.start_time.strftime("%Y%m%d_%H%M%S")
         self.active_file = self.trajectory_dir / f"{task_id}_{timestamp_slug}.jsonl"
 
@@ -82,13 +83,13 @@ class TrajectoryLogger:
         self,
         success: bool,
         final_patch: str,
-        metrics: Optional[dict[str, Any]] = None
+        metrics: dict[str, Any] | None = None
     ) -> None:
         """Finalize the trajectory record with outcome, patch diff, and summary metrics."""
         if not self.active_file:
             return
 
-        end_time = datetime.now(timezone.utc)
+        end_time = datetime.now(UTC)
         duration_total = (end_time - (self.start_time or end_time)).total_seconds()
 
         footer = {

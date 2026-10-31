@@ -1,6 +1,6 @@
 """Sandboxed Bash execution tool with smart output truncation and timeout enforcement."""
 
-from typing import Optional, Type
+
 from pydantic import BaseModel, Field
 
 from swe_agent.safety.hitl import HITLGatekeeper
@@ -11,13 +11,13 @@ from swe_agent.tools.base import BaseTool, ToolResult
 class RunBashCommandInput(BaseModel):
     """Input arguments for run_bash_command."""
     command: str = Field(description="The shell command to execute inside the sandbox")
-    timeout_seconds: Optional[int] = Field(
+    timeout_seconds: int | None = Field(
         default=None,
         ge=5,
         le=600,
         description="Optional timeout in seconds (defaults to sandbox config limit)"
     )
-    workdir: Optional[str] = Field(
+    workdir: str | None = Field(
         default=None,
         description="Optional subdirectory within workspace to run command from"
     )
@@ -31,9 +31,9 @@ class RunBashCommandTool(BaseTool):
         "Execute a shell command inside the isolated sandbox (e.g., pytest, python, git). "
         "Captures exit code, stdout, and stderr with smart truncation to prevent context blowup."
     )
-    args_schema: Type[BaseModel] = RunBashCommandInput
+    args_schema: type[BaseModel] = RunBashCommandInput
 
-    def __init__(self, gatekeeper: Optional[HITLGatekeeper] = None):
+    def __init__(self, gatekeeper: HITLGatekeeper | None = None):
         self.gatekeeper = gatekeeper or HITLGatekeeper()
 
     def execute(self, sandbox: AbstractSandbox, **kwargs) -> ToolResult:

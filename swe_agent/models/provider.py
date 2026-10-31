@@ -3,7 +3,8 @@
 import json
 import logging
 import time
-from typing import Any, Optional
+from typing import Any
+
 from pydantic import BaseModel, Field
 
 try:
@@ -27,7 +28,7 @@ class ToolCall(BaseModel):
 
 class ModelResponse(BaseModel):
     """Normalized response returned from model providers."""
-    content: Optional[str] = None
+    content: str | None = None
     tool_calls: list[ToolCall] = Field(default_factory=list)
     prompt_tokens: int = 0
     completion_tokens: int = 0
@@ -45,9 +46,9 @@ class ModelProvider:
 
     def __init__(
         self,
-        primary_model: Optional[str] = None,
-        fallback_model: Optional[str] = None,
-        temperature: Optional[float] = None
+        primary_model: str | None = None,
+        fallback_model: str | None = None,
+        temperature: float | None = None
     ):
         self.primary_model = primary_model or settings.primary_model
         self.fallback_model = fallback_model or settings.fallback_model
@@ -60,8 +61,8 @@ class ModelProvider:
     def generate(
         self,
         messages: list[dict[str, Any]],
-        tools: Optional[list[dict[str, Any]]] = None,
-        model_override: Optional[str] = None
+        tools: list[dict[str, Any]] | None = None,
+        model_override: str | None = None
     ) -> ModelResponse:
         """Call LLM with automatic tool schemas and normalized response extraction.
 
@@ -98,7 +99,7 @@ class ModelProvider:
         self,
         model_name: str,
         messages: list[dict[str, Any]],
-        tools: Optional[list[dict[str, Any]]],
+        tools: list[dict[str, Any]] | None,
         start_time: float
     ) -> ModelResponse:
         kwargs: dict[str, Any] = {

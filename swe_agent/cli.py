@@ -2,15 +2,15 @@
 
 import json
 from pathlib import Path
-from typing import Optional
 
 import typer
-from rich import print as rprint
 from rich.console import Console
 from rich.panel import Panel
 from rich.syntax import Syntax
 from rich.table import Table
 
+from benchmark.evaluator import BenchmarkEvaluator
+from benchmark.manifest import FROZEN_BENCHMARK_TASKS
 from swe_agent import __version__
 from swe_agent.config import ExecutionMode, settings
 from swe_agent.core.agent import SweAgent
@@ -19,9 +19,6 @@ from swe_agent.sandbox.docker_sandbox import DockerSandbox
 from swe_agent.sandbox.local_sandbox import LocalSandbox
 from swe_agent.telemetry.tracer import TrajectoryLogger
 from swe_agent.tools.registry import create_default_registry
-
-from benchmark.evaluator import BenchmarkEvaluator
-from benchmark.manifest import FROZEN_BENCHMARK_TASKS
 
 app = typer.Typer(
     name="swe-agent",
@@ -67,7 +64,7 @@ def run(
     repo: Path = typer.Option(Path("."), "--repo", "-r", help="Target repository directory to work inside"),
     mode: str = typer.Option("production", "--mode", "-m", help="Execution mode: 'production' (HITL) or 'benchmark' (headless)"),
     max_steps: int = typer.Option(30, "--max-steps", "-s", help="Step limit budget for the task"),
-    model: Optional[str] = typer.Option(None, "--model", help="Override primary LLM model identifier"),
+    model: str | None = typer.Option(None, "--model", help="Override primary LLM model identifier"),
     use_docker: bool = typer.Option(False, "--docker", help="Force Docker container sandbox instead of local sandbox"),
 ):
     """Execute autonomous engineering agent on an assigned software issue."""
@@ -153,8 +150,8 @@ def run(
 
 @app.command()
 def benchmark(
-    task_id: Optional[str] = typer.Option(None, "--task", "-t", help="Evaluate specific task ID (evaluates all if omitted)"),
-    model: Optional[str] = typer.Option(None, "--model", help="Model identifier to benchmark"),
+    task_id: str | None = typer.Option(None, "--task", "-t", help="Evaluate specific task ID (evaluates all if omitted)"),
+    model: str | None = typer.Option(None, "--model", help="Model identifier to benchmark"),
 ):
     """Run custom SWE-bench-inspired evaluation suite in headless mode."""
     _print_banner()
@@ -229,7 +226,7 @@ def inspect(
         console.print("[yellow]Empty trajectory file.[/yellow]")
         return
 
-    for idx, raw_line in enumerate(lines):
+    for _idx, raw_line in enumerate(lines):
         record = json.loads(raw_line)
         rec_type = record.get("type", "")
 
@@ -251,7 +248,7 @@ def inspect(
             outputs = record.get("tool_outputs", [])
 
             tool_details = []
-            for t, o in zip(tools, outputs):
+            for t, o in zip(tools, outputs, strict=False):
                 tool_details.append(f"- [bold magenta]{t.get('name')}[/bold magenta]({t.get('arguments')})\n  -> {str(o.get('output'))[:120]}...")
 
             console.print(Panel(

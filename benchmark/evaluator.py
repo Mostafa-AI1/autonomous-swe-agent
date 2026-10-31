@@ -1,18 +1,10 @@
 """Automated benchmark evaluator running tasks against headless agent and scoring metrics."""
 
-import json
+import contextlib
 import logging
 import subprocess
 import time
 from pathlib import Path
-from typing import Callable, Optional
-
-from swe_agent.config import ExecutionMode, settings
-from swe_agent.core.agent import SweAgent
-from swe_agent.models.provider import ModelProvider
-from swe_agent.sandbox.local_sandbox import LocalSandbox
-from swe_agent.telemetry.tracer import TrajectoryLogger
-from swe_agent.tools.registry import create_default_registry
 
 from benchmark.manifest import FROZEN_BENCHMARK_TASKS, BenchmarkTask
 from benchmark.metrics import (
@@ -22,6 +14,12 @@ from benchmark.metrics import (
     calculate_patch_delta,
     calculate_spurious_edits,
 )
+from swe_agent.config import ExecutionMode, settings
+from swe_agent.core.agent import SweAgent
+from swe_agent.models.provider import ModelProvider
+from swe_agent.sandbox.local_sandbox import LocalSandbox
+from swe_agent.telemetry.tracer import TrajectoryLogger
+from swe_agent.tools.registry import create_default_registry
 
 logger = logging.getLogger(__name__)
 
@@ -42,7 +40,7 @@ class BenchmarkEvaluator:
     def evaluate_task(
         self,
         task: BenchmarkTask,
-        model_provider: Optional[ModelProvider] = None
+        model_provider: ModelProvider | None = None
     ) -> TaskEvaluationResult:
         """Run single benchmark task in headless benchmark mode and compute 8 metrics."""
         task_dir = self.base_eval_dir / task.task_id
@@ -103,11 +101,9 @@ class BenchmarkEvaluator:
         resolved = verif_res.is_success and "VERIFICATION SUCCESSFUL" in verif_res.combined_output
 
         # Clean up verification test files
-        for rel_path in task.verification_test_files.keys():
-            try:
+        for rel_path in task.verification_test_files:
+            with contextlib.suppress(Exception):
                 (task_dir / rel_path).unlink(missing_ok=True)
-            except Exception:
-                pass
 
         # 5. Check for regression in pre-existing tests (if any)
         existing_test_res = sandbox.execute("python -m pytest tests/")
@@ -142,8 +138,8 @@ class BenchmarkEvaluator:
 
     def run_benchmark(
         self,
-        tasks: Optional[list[BenchmarkTask]] = None,
-        model_provider: Optional[ModelProvider] = None
+        tasks: list[BenchmarkTask] | None = None,
+        model_provider: ModelProvider | None = None
     ) -> BenchmarkSummary:
         """Run full evaluation suite across all tasks and generate scoreboard."""
         selected_tasks = tasks or FROZEN_BENCHMARK_TASKS

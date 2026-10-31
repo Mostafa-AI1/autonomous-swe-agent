@@ -2,7 +2,9 @@
 
 import json
 from pathlib import Path
+
 from typer.testing import CliRunner
+
 from swe_agent.cli import app
 
 runner = CliRunner()

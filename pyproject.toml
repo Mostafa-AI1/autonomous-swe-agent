@@ -43,14 +43,17 @@ telemetry = [
 [project.scripts]
 swe-agent = "swe_agent.cli:app"
 
+[tool.hatch.build.targets.wheel]
+packages = ["swe_agent", "benchmark"]
+
 [tool.ruff]
 line-length = 100
 target-version = "py311"
+extend-exclude = ["workspace", "trajectories", "eval_workspaces", "eval_results"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "W", "UP", "B", "C4", "SIM"]
-ignore = ["E501"]
+ignore = ["E501", "B008"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-asyncio_mode = "auto"

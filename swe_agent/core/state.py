@@ -1,7 +1,7 @@
 """Goal-Directed Finite State Machine (FSM) and working memory models."""
 
 from enum import Enum
-from typing import Any, Optional
+
 from pydantic import BaseModel, Field
 
 
@@ -31,7 +31,7 @@ class AgentState(BaseModel):
         default="Investigating codebase to localize the root cause.",
         description="Current engineering hypothesis explaining the bug"
     )
-    reproduction_script: Optional[str] = Field(
+    reproduction_script: str | None = Field(
         default=None,
         description="Path to created reproduction script (e.g. repro_issue.py)"
     )
@@ -54,7 +54,7 @@ class AgentState(BaseModel):
     final_patch: str = ""
     conclusion_summary: str = ""
 
-    def transition_to(self, new_phase: AgentPhase, reason: Optional[str] = None) -> None:
+    def transition_to(self, new_phase: AgentPhase, reason: str | None = None) -> None:
         """Explicitly transition to a new FSM phase."""
         self.phase = new_phase
 

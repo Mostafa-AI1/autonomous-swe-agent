@@ -1,8 +1,9 @@
 """Unit tests for ToolRegistry and schema conversion."""
 
 from pathlib import Path
+
 from swe_agent.sandbox.local_sandbox import LocalSandbox
-from swe_agent.tools.registry import ToolRegistry, create_default_registry
+from swe_agent.tools.registry import create_default_registry
 
 
 def test_default_tool_registry():

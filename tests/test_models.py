@@ -1,7 +1,8 @@
 """Unit tests for ModelProvider gateway and fallback mechanism."""
 
 from unittest.mock import MagicMock, patch
-from swe_agent.models.provider import ModelProvider, ModelResponse
+
+from swe_agent.models.provider import ModelProvider
 
 
 def test_model_provider_initialization():

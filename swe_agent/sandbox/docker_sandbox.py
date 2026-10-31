@@ -1,8 +1,8 @@
 """Production Docker sandbox for strict environment isolation and security."""
 
+import contextlib
 import time
 from pathlib import Path
-from typing import Optional
 
 try:
     import docker
@@ -22,7 +22,7 @@ class DockerSandbox(AbstractSandbox):
     def __init__(
         self,
         workspace_dir: str | Path,
-        image_name: Optional[str] = None,
+        image_name: str | None = None,
         network_enabled: bool = False
     ):
         if docker is None:
@@ -84,17 +84,15 @@ class DockerSandbox(AbstractSandbox):
             try:
                 self.container.stop(timeout=2)
             except Exception:
-                try:
+                with contextlib.suppress(Exception):
                     self.container.kill()
-                except Exception:
-                    pass
             self.container = None
 
     def execute(
         self,
         command: str,
-        timeout_seconds: Optional[int] = None,
-        workdir: Optional[str] = None
+        timeout_seconds: int | None = None,
+        workdir: str | None = None
     ) -> SandboxResult:
         """Execute a shell command inside the Docker container."""
         if not self.container:
@@ -106,7 +104,8 @@ class DockerSandbox(AbstractSandbox):
         start_time = time.perf_counter()
 
         # Wrap with timeout command in POSIX shell
-        wrapped_command = f"bash -c {docker.utils.shlex.quote(command)}" if hasattr(docker, "utils") else f"bash -c '{command}'"
+        cmd_str = docker.utils.shlex.quote(command) if hasattr(docker, "utils") else f"'{command}'"
+        wrapped_command = f"timeout {effective_timeout} bash -c {cmd_str}"
 
         exec_res = self.container.exec_run(
             cmd=wrapped_command,

@@ -2,6 +2,7 @@
 
 import json
 from pathlib import Path
+
 from benchmark.swe_bench_lite import SweBenchLiteAdapter, SweBenchLiteInstance
 
 

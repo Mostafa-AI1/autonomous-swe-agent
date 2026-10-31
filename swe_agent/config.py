@@ -2,7 +2,7 @@
 
 from enum import Enum
 from pathlib import Path
-from typing import Optional
+
 from pydantic import AliasChoices, Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -42,7 +42,7 @@ class Settings(BaseSettings):
         validation_alias=AliasChoices("fallback_model", "swe_fallback_model"),
         description="Local fallback coding model when offline or testing without cloud API"
     )
-    gemini_api_key: Optional[str] = Field(
+    gemini_api_key: str | None = Field(
         default=None,
         description="API key for Google Gemini / AI Studio"
     )

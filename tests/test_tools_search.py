@@ -1,6 +1,7 @@
 """Unit tests for code search and AST symbol intelligence tools."""
 
 from pathlib import Path
+
 from swe_agent.sandbox.local_sandbox import LocalSandbox
 from swe_agent.tools.search import CodeSearchTool, FindSymbolTool, ListDirectoryTool
 

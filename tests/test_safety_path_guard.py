@@ -1,7 +1,9 @@
 """Unit tests for path traversal guard and sensitive file blocklists."""
 
-import pytest
 from pathlib import Path
+
+import pytest
+
 from swe_agent.safety.path_guard import SecurityViolationError, validate_safe_path
 
 

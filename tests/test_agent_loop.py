@@ -3,6 +3,7 @@
 import subprocess
 from pathlib import Path
 from unittest.mock import MagicMock
+
 from swe_agent.core.agent import SweAgent
 from swe_agent.core.state import AgentPhase
 from swe_agent.models.provider import ModelProvider, ModelResponse, ToolCall

@@ -4,11 +4,9 @@ Useful for lightweight local development, unit testing, and environments
 where Docker daemon cannot be initialized.
 """
 
-import os
 import subprocess
 import time
 from pathlib import Path
-from typing import Optional
 
 from swe_agent.config import settings
 from swe_agent.safety.path_guard import validate_safe_path
@@ -42,8 +40,8 @@ class LocalSandbox(AbstractSandbox):
     def execute(
         self,
         command: str,
-        timeout_seconds: Optional[int] = None,
-        workdir: Optional[str] = None
+        timeout_seconds: int | None = None,
+        workdir: str | None = None
     ) -> SandboxResult:
         """Execute command locally inside the workspace directory."""
         if not self._is_active:

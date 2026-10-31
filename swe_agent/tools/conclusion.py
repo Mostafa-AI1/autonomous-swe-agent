@@ -1,6 +1,6 @@
 """Conclusion tool allowing the agent to formally signal task completion."""
 
-from typing import Type
+
 from pydantic import BaseModel, Field
 
 from swe_agent.sandbox.protocol import AbstractSandbox
@@ -21,7 +21,7 @@ class ConcludeTaskTool(BaseTool):
         "Call this tool when you have finished the task (or determined it cannot be completed). "
         "Summarize the root cause, the fix applied, and how you verified it."
     )
-    args_schema: Type[BaseModel] = ConcludeTaskInput
+    args_schema: type[BaseModel] = ConcludeTaskInput
 
     def execute(self, sandbox: AbstractSandbox, **kwargs) -> ToolResult:
         args = ConcludeTaskInput(**kwargs)

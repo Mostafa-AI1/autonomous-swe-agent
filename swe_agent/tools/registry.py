@@ -1,6 +1,6 @@
 """Centralized Tool Registry for schema generation and safe dispatching."""
 
-from typing import Any, Optional
+from typing import Any
 
 from swe_agent.sandbox.protocol import AbstractSandbox
 from swe_agent.tools.base import BaseTool, ToolResult
@@ -23,7 +23,7 @@ class ToolRegistry:
             raise ValueError(f"Tool {tool.__class__.__name__} must define a unique 'name'.")
         self._tools[tool.name] = tool
 
-    def get_tool(self, name: str) -> Optional[BaseTool]:
+    def get_tool(self, name: str) -> BaseTool | None:
         """Look up tool by name."""
         return self._tools.get(name)
 

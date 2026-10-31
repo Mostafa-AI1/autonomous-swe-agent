@@ -4,7 +4,7 @@ import json
 import logging
 import time
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
 import uvicorn
 from fastapi import FastAPI, HTTPException
@@ -13,6 +13,7 @@ from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
+from benchmark.manifest import FROZEN_BENCHMARK_TASKS
 from swe_agent import __version__
 from swe_agent.config import ExecutionMode, settings
 from swe_agent.core.agent import SweAgent
@@ -20,7 +21,6 @@ from swe_agent.models.provider import ModelProvider
 from swe_agent.sandbox.local_sandbox import LocalSandbox
 from swe_agent.telemetry.tracer import TrajectoryLogger
 from swe_agent.tools.registry import create_default_registry
-from benchmark.manifest import FROZEN_BENCHMARK_TASKS
 
 logger = logging.getLogger(__name__)
 
@@ -54,7 +54,7 @@ class TaskRunRequest(BaseModel):
     issue_statement: str
     repo_path: str = Field(default=".")
     mode: str = Field(default="benchmark")
-    model_override: Optional[str] = None
+    model_override: str | None = None
 
 
 @app.get("/")

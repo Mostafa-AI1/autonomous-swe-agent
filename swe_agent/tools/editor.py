@@ -5,8 +5,6 @@ Built on the Princeton SWE-agent / OpenHands ACI paradigm:
 - Line-numbered windowed viewing prevents context-window blowout.
 """
 
-from pathlib import Path
-from typing import Type
 from pydantic import BaseModel, Field
 
 from swe_agent.sandbox.protocol import AbstractSandbox
@@ -28,7 +26,7 @@ class ViewFileTool(BaseTool):
         "View file content with line numbers in a windowed range. "
         "Always view code before editing to inspect exact whitespace, indentation, and context."
     )
-    args_schema: Type[BaseModel] = ViewFileInput
+    args_schema: type[BaseModel] = ViewFileInput
 
     def execute(self, sandbox: AbstractSandbox, **kwargs) -> ToolResult:
         args = ViewFileInput(**kwargs)
@@ -99,7 +97,7 @@ class EditFileReplaceTool(BaseTool):
         "The `old_str` must match EXACTLY ONE occurrence in the file. If it matches 0 "
         "or >1 times, the edit is rejected. Include surrounding lines for uniqueness."
     )
-    args_schema: Type[BaseModel] = EditFileReplaceInput
+    args_schema: type[BaseModel] = EditFileReplaceInput
 
     def execute(self, sandbox: AbstractSandbox, **kwargs) -> ToolResult:
         args = EditFileReplaceInput(**kwargs)
@@ -167,7 +165,7 @@ class CreateFileTool(BaseTool):
         "Create a new file in the repository. "
         "Use this to write reproduction scripts (e.g., reproduce_issue.py) or new modules."
     )
-    args_schema: Type[BaseModel] = CreateFileInput
+    args_schema: type[BaseModel] = CreateFileInput
 
     def execute(self, sandbox: AbstractSandbox, **kwargs) -> ToolResult:
         args = CreateFileInput(**kwargs)

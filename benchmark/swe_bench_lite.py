@@ -2,7 +2,8 @@
 
 import json
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
+
 from pydantic import BaseModel, Field
 
 from benchmark.manifest import BenchmarkTask
@@ -15,7 +16,7 @@ class SweBenchLiteInstance(BaseModel):
     repo: str = Field(description="e.g. 'django/django'")
     base_commit: str = Field(description="Git commit SHA before PR was merged")
     problem_statement: str = Field(description="Issue text / problem description from GitHub issue")
-    hints_text: Optional[str] = Field(default="", description="Optional conversation hints")
+    hints_text: str | None = Field(default="", description="Optional conversation hints")
     patch: str = Field(description="Ground truth gold patch (quarantined)")
     test_patch: str = Field(description="Ground truth test patch (quarantined)")
     FAIL_TO_PASS: list[str] = Field(default_factory=list, description="Tests expected to fail before fix, pass after")

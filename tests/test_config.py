@@ -1,6 +1,5 @@
 """Unit tests for configuration and execution mode controls."""
 
-import pytest
 from swe_agent.config import ExecutionMode, Settings
 
 

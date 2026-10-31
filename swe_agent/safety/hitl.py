@@ -1,7 +1,7 @@
 """Human-In-The-Loop (HITL) Gatekeeper enforcing dual execution modes."""
 
 import logging
-from typing import Callable, Optional
+from collections.abc import Callable
 
 from swe_agent.config import settings
 from swe_agent.safety.classifier import CommandRiskAssessment, RiskLevel, classify_command
@@ -31,7 +31,7 @@ def default_terminal_approval_prompt(assessment: CommandRiskAssessment) -> bool:
 class HITLGatekeeper:
     """Enforces safety policies based on current execution mode (PRODUCTION vs. BENCHMARK)."""
 
-    def __init__(self, approval_callback: Optional[ApprovalCallback] = None):
+    def __init__(self, approval_callback: ApprovalCallback | None = None):
         self.approval_callback = approval_callback or default_terminal_approval_prompt
 
     def authorize_command(self, command: str) -> tuple[bool, str]:

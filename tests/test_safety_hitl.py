@@ -2,7 +2,8 @@
 
 from pathlib import Path
 from unittest.mock import patch
-from swe_agent.config import ExecutionMode, Settings
+
+from swe_agent.config import ExecutionMode
 from swe_agent.safety.hitl import HITLGatekeeper
 from swe_agent.sandbox.local_sandbox import LocalSandbox
 from swe_agent.tools.bash_tool import RunBashCommandTool

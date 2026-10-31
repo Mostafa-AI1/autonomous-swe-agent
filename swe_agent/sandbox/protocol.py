@@ -1,7 +1,7 @@
 """Sandbox execution protocols, output models, and smart truncation utilities."""
 
 from abc import ABC, abstractmethod
-from typing import Optional
+
 from pydantic import BaseModel, Field
 
 
@@ -87,8 +87,8 @@ class AbstractSandbox(ABC):
     def execute(
         self,
         command: str,
-        timeout_seconds: Optional[int] = None,
-        workdir: Optional[str] = None
+        timeout_seconds: int | None = None,
+        workdir: str | None = None
     ) -> SandboxResult:
         """Execute a shell command inside the isolated environment.
 

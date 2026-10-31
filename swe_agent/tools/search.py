@@ -4,7 +4,8 @@ import ast
 import os
 import re
 from pathlib import Path
-from typing import Literal, Optional, Type
+from typing import Literal
+
 from pydantic import BaseModel, Field
 
 from swe_agent.sandbox.protocol import AbstractSandbox
@@ -22,7 +23,7 @@ class CodeSearchInput(BaseModel):
     path: str = Field(default=".", description="Relative subdirectory to search within")
     is_regex: bool = Field(default=False, description="Whether to treat query as regex")
     case_sensitive: bool = Field(default=False, description="Whether search should be case sensitive")
-    file_pattern: Optional[str] = Field(
+    file_pattern: str | None = Field(
         default=None,
         description="Optional glob filter, e.g. '*.py' or 'tests/*'"
     )
@@ -37,7 +38,7 @@ class CodeSearchTool(BaseTool):
         "Returns matched files, line numbers, and code snippets. "
         "Results are capped at 50 matches to protect context window."
     )
-    args_schema: Type[BaseModel] = CodeSearchInput
+    args_schema: type[BaseModel] = CodeSearchInput
 
     def execute(self, sandbox: AbstractSandbox, **kwargs) -> ToolResult:
         args = CodeSearchInput(**kwargs)
@@ -109,7 +110,7 @@ class CodeSearchTool(BaseTool):
                 file_path = Path(root) / file
                 rel_path = file_path.relative_to(workspace_dir).as_posix()
                 try:
-                    with open(file_path, "r", encoding="utf-8", errors="replace") as f:
+                    with open(file_path, encoding="utf-8", errors="replace") as f:
                         for line_no, line in enumerate(f, start=1):
                             if pattern.search(line):
                                 matches.append(f"{rel_path}:{line_no}:{line.strip()}")
@@ -142,7 +143,7 @@ class FindSymbolTool(BaseTool):
         "Locate Python functions, methods, or classes using AST analysis. "
         "Returns file paths, line ranges, signatures, and docstring headers."
     )
-    args_schema: Type[BaseModel] = FindSymbolInput
+    args_schema: type[BaseModel] = FindSymbolInput
 
     def execute(self, sandbox: AbstractSandbox, **kwargs) -> ToolResult:
         args = FindSymbolInput(**kwargs)
@@ -167,7 +168,7 @@ class FindSymbolTool(BaseTool):
                     continue
 
                 for node in ast.walk(tree):
-                    if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                    if isinstance(node, ast.FunctionDef | ast.AsyncFunctionDef):
                         if args.symbol_type in ("any", "function") and node.name == args.name:
                             sig = self._format_func_sig(node)
                             doc = ast.get_docstring(node)
@@ -176,16 +177,15 @@ class FindSymbolTool(BaseTool):
                                 f"{rel_path}:{node.lineno}-{node.end_lineno or node.lineno} "
                                 f"[function] def {sig}{doc_summary}"
                             )
-                    elif isinstance(node, ast.ClassDef):
-                        if args.symbol_type in ("any", "class") and node.name == args.name:
-                            bases = [ast.unparse(b) for b in node.bases]
-                            base_str = f"({', '.join(bases)})" if bases else ""
-                            doc = ast.get_docstring(node)
-                            doc_summary = f" - '{doc.splitlines()[0]}'" if doc else ""
-                            results.append(
-                                f"{rel_path}:{node.lineno}-{node.end_lineno or node.lineno} "
-                                f"[class] class {node.name}{base_str}{doc_summary}"
-                            )
+                    elif isinstance(node, ast.ClassDef) and args.symbol_type in ("any", "class") and node.name == args.name:
+                        bases = [ast.unparse(b) for b in node.bases]
+                        base_str = f"({', '.join(bases)})" if bases else ""
+                        doc = ast.get_docstring(node)
+                        doc_summary = f" - '{doc.splitlines()[0]}'" if doc else ""
+                        results.append(
+                            f"{rel_path}:{node.lineno}-{node.end_lineno or node.lineno} "
+                            f"[class] class {node.name}{base_str}{doc_summary}"
+                        )
 
         if not results:
             return ToolResult(
@@ -220,7 +220,7 @@ class ListDirectoryTool(BaseTool):
         "Explore folder layout and file tree. "
         "Respects recursion depth and excludes cache/git directories."
     )
-    args_schema: Type[BaseModel] = ListDirectoryInput
+    args_schema: type[BaseModel] = ListDirectoryInput
 
     def execute(self, sandbox: AbstractSandbox, **kwargs) -> ToolResult:
         args = ListDirectoryInput(**kwargs)
@@ -253,7 +253,7 @@ class ListDirectoryTool(BaseTool):
             return
 
         try:
-            entries = sorted(list(current_dir.iterdir()), key=lambda e: (not e.is_dir(), e.name.lower()))
+            entries = sorted(current_dir.iterdir(), key=lambda e: (not e.is_dir(), e.name.lower()))
         except PermissionError:
             return
 

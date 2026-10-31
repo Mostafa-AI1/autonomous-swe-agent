@@ -1,7 +1,6 @@
 """Autonomous Software Engineering Agent - Core Controller and ReAct Loop."""
 
 import logging
-from typing import Optional
 
 from swe_agent.config import settings
 from swe_agent.core.memory import ContextManager
@@ -25,10 +24,10 @@ class SweAgent:
     def __init__(
         self,
         sandbox: AbstractSandbox,
-        model_provider: Optional[ModelProvider] = None,
-        tool_registry: Optional[ToolRegistry] = None,
-        tracer: Optional[TrajectoryLogger] = None,
-        max_steps: Optional[int] = None
+        model_provider: ModelProvider | None = None,
+        tool_registry: ToolRegistry | None = None,
+        tracer: TrajectoryLogger | None = None,
+        max_steps: int | None = None
     ):
         self.sandbox = sandbox
         self.model_provider = model_provider or ModelProvider()

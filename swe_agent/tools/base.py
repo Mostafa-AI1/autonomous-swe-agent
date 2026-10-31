@@ -1,7 +1,8 @@
 """Base Tool specification with Pydantic validation and schema generation."""
 
 from abc import ABC, abstractmethod
-from typing import Any, Optional, Type
+from typing import Any
+
 from pydantic import BaseModel, Field
 
 from swe_agent.sandbox.protocol import AbstractSandbox
@@ -12,7 +13,7 @@ class ToolResult(BaseModel):
 
     success: bool = Field(description="Whether the tool execution succeeded")
     output: str = Field(description="Human/LLM readable output text or error message")
-    data: Optional[dict[str, Any]] = Field(default=None, description="Structured metadata if any")
+    data: dict[str, Any] | None = Field(default=None, description="Structured metadata if any")
 
     def __str__(self) -> str:
         return self.output
@@ -27,7 +28,7 @@ class BaseTool(ABC):
 
     name: str = ""
     description: str = ""
-    args_schema: Type[BaseModel] = BaseModel
+    args_schema: type[BaseModel] = BaseModel
 
     @abstractmethod
     def execute(self, sandbox: AbstractSandbox, **kwargs: Any) -> ToolResult:

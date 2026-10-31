@@ -1,6 +1,5 @@
 """Unit tests for AgentState and AgentPhase FSM transitions."""
 
-import pytest
 from swe_agent.core.state import AgentPhase, AgentState
 
 
